@@ -1,0 +1,3 @@
+[submodule "insound"]
+	path = insound
+	url = https://github.com/tadashibashi/insound.git

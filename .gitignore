@@ -1,0 +1,24 @@
+# IDE-related files
+.idea/
+.vscode/
+.vs/
+*.sublime-workspace
+
+.cache/
+.gradle/
+local.properties
+.cxx
+
+CMakeUserPresets.json
+
+# Build directories
+out/
+build/
+cmake-build*/
+
+# Android project symlinks
+**/android/app/jni/insound
+**/android/app/src/main/assets/assets
+
+# OS-related files
+.DS_Store
