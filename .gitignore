@@ -17,8 +17,8 @@ build/
 cmake-build*/
 
 # Android project symlinks
-**/android/app/jni/insound
-**/android/app/src/main/assets/assets
+examples/sandbox/android/app/jni/insound
+examples/sandbox/android/app/src/main/assets/assets
 
 # OS-related files
 .DS_Store
