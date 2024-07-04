@@ -155,10 +155,10 @@ int mainWithEngine()
     bool sourcesWereLoaded = false;
     Handle<StreamSource> sources[4];
 
-     engine.playStream(getRootDir() + "assets/bassdrum.wav", true, true, false, myBus, &sources[0]);
-     engine.playStream(getRootDir() + "assets/ep.wav", true, true, false, myBus, &sources[1]);
-     engine.playStream(getRootDir() + "assets/piano.wav", true, true, false, myBus, &sources[2]);
-     engine.playStream(getRootDir() + "assets/snare-hat.wav", true, true, false, myBus, &sources[3]);
+    engine.playStream(getRootDir() + "assets/bassdrum.wav", true, true, false, myBus, &sources[0]);
+    engine.playStream(getRootDir() + "assets/ep.wav", true, true, false, myBus, &sources[1]);
+    engine.playStream(getRootDir() + "assets/piano.wav", true, true, false, myBus, &sources[2]);
+    engine.playStream(getRootDir() + "assets/snare-hat.wav", true, true, false, myBus, &sources[3]);
 
     const SoundBuffer *pizz = buffers.loadAsync("assets/vln_pizz.ogg");
     const SoundBuffer *orch = buffers.loadAsync("assets/orch_scene.mp3");
@@ -278,6 +278,16 @@ int mainWithEngine()
                         case SDL_SCANCODE_KP_ENTER:
                         {
                             engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, {}, nullptr);
+                            engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, {}, nullptr);
+                            engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, {}, nullptr);
+                            engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, {}, nullptr);
+                            engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, {}, nullptr);
+                            engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, {}, nullptr);
+                            engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, {}, nullptr);
+                            engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, {}, nullptr);
+                            engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, {}, nullptr);
+                            engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, {}, nullptr);
+                            engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, {}, nullptr);
                         } break;
 
                         case SDL_SCANCODE_O: { // play one shot
@@ -354,7 +364,7 @@ int mainWithEngine()
 
                         case SDL_SCANCODE_N:
                         {
-                            engine.playStream("assets/test.nsf", false, true, true, {}, nullptr);
+                            engine.playStream(getRootDir() + "assets/orch_scene.mp3", false, true, true, {}, nullptr);
                         } break;
 
                         // Reset the sound sources
@@ -487,7 +497,6 @@ int mainWithEngine()
         SDL_SetRenderDrawColor(renderer, 128, 128, 255, 255);
         SDL_RenderClear(renderer);
         SDL_RenderPresent(renderer);
-        std::this_thread::sleep_for(std::chrono::nanoseconds(16666667));
     }
 #ifdef __EMSCRIPTEN__
     };
