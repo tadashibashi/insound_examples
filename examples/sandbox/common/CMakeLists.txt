@@ -1,30 +1,45 @@
-project(insound_sandbox VERSION 0.0.1)
-
-add_library(sandbox_common STATIC common.h common.cpp)
-if (EMSCRIPTEN)
-    target_link_options(sandbox_common PUBLIC -sUSE_SDL=2)
-    target_compile_options(sandbox_common PUBLIC -sUSE_SDL=2)
+if (APPLE)
+    project(insound_sandbox
+        LANGUAGES OBJC OBJCXX C CXX
+        VERSION 0.0.1)
 else()
-    if (NOT TARGET SDL2::SDL2-static) # user can provide their own SDL2 submodule, but we may want to enforce a minimum version
+    project(insound_sandbox
+        LANGUAGES C CXX
+        VERSION 0.0.1)
+endif()
+
+add_library(sandbox_common STATIC)
+
+if (INSOUND_SANDBOX_USE_SDL3)
+    if (NOT TARGET SDL3::SDL3-static) # user can provide their own SDL2 submodule, but we may want to enforce a minimum version
         include(FetchContent)
-        FetchContent_Declare(SDL2
+        FetchContent_Declare(SDL3
             GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
-            GIT_TAG        fb1497566c5a05e2babdcf45ef0ab5c7cca2c4ae
+            GIT_TAG        17d4f8d6990d2bd92d6a8be4b23c4dc1626fb923
         )
 
         set(SDL_STATIC             ON )
         set(SDL_SHARED             OFF)
-        set(SDL2_DISABLE_UNINSTALL ON )
-        set(SDL2_DISABLE_INSTALL   ON )
+        set(SDL3_DISABLE_UNINSTALL ON )
+        set(SDL3_DISABLE_INSTALL   ON )
         set(SDL_TEST               OFF)
         set(SDL_ASSEMBLY           ON)
         set(SDL_ARMNEON            ON)
         set(SDL_PTHREADS           NOT ${INSOUND_NO_PTHREAD})
 
-        FetchContent_MakeAvailable(SDL2)
+        FetchContent_MakeAvailable(SDL3)
     endif()
 
-    target_link_libraries(sandbox_common PUBLIC SDL2::SDL2-static)
+    target_link_libraries(sandbox_common PUBLIC SDL3::SDL3-static)
+    target_sources(sandbox_common PRIVATE main_sdl3.cpp)
+else()
+    if (EMSCRIPTEN)
+        target_compile_options(sandbox_common PRIVATE -sUSE_SDL=2)
+        target_link_options(sandbox_common PRIVATE -sUSE_SDL=2)
+    else()
+        target_link_libraries(sandbox_common PUBLIC SDL2::SDL2-static)
+        target_sources(sandbox_common PRIVATE main_sdl2.cpp)
+    endif()
 endif()
 
 target_link_libraries(sandbox_common PRIVATE insound)
@@ -47,10 +62,10 @@ if (NOT ANDROID)
     add_executable(insound_sandbox ${EXE_TYPE})
     list(APPEND TARGET_SOURCE main.cpp)
 
-    if (NOT EMSCRIPTEN)
+    target_link_libraries(insound_sandbox PRIVATE sandbox_common)
+    if (NOT EMSCRIPTEN AND NOT INSOUND_SANDBOX_USE_SDL3)
         target_link_libraries(insound_sandbox PRIVATE SDL2::SDL2main)
     endif()
-    target_link_libraries(insound_sandbox PRIVATE sandbox_common)
 
     # Mac and iOS bundle
     if (APPLE)

@@ -17,7 +17,7 @@ build/
 cmake-build*/
 
 # Android project symlinks
-examples/sandbox/android/app/jni/insound
+examples/sandbox/android/app/jni/insound_examples
 examples/sandbox/android/app/src/main/assets/assets
 
 # OS-related files

@@ -7,7 +7,7 @@ macro(add_devserver_target TARGET_NAME)
     if (EMSCRIPTEN)
         set(SERVE_TARGET serve_${TARGET_NAME})
         find_program(NODE node)
-        set(DEVSERVER ${INSOUND_ROOT_DIR}/tools/dev-server/main.js)
+        set(DEVSERVER ${INSOUND_EXAMPLES_ROOT_DIR}/tools/dev-server/main.js)
 
         if (NODE)
             add_custom_target(${SERVE_TARGET}
