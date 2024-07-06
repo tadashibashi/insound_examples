@@ -1,6 +1,7 @@
 #include "common.h"
 
 #include <insound/core.h>
+#include <insound/core/path.h>
 using namespace insound;
 
 #include <SDL2/SDL.h>
@@ -128,7 +129,7 @@ int mainWithEngine()
 
     Engine engine;
 
-    int bufferFrameSize = 1024;
+    int bufferFrameSize = 512;
     if (!engine.open(0, bufferFrameSize))
     {
         printf("Failed to init sound engine\n");
@@ -155,16 +156,19 @@ int mainWithEngine()
     bool sourcesWereLoaded = false;
     Handle<StreamSource> sources[4];
 
-    engine.playStream(getRootDir() + "assets/bassdrum.wav", true, true, false, myBus, &sources[0]);
-    engine.playStream(getRootDir() + "assets/ep.wav", true, true, false, myBus, &sources[1]);
-    engine.playStream(getRootDir() + "assets/piano.wav", true, true, false, myBus, &sources[2]);
-    engine.playStream(getRootDir() + "assets/snare-hat.wav", true, true, false, myBus, &sources[3]);
+    engine.playStream(path::join(getRootDir(), "assets/bassdrum.wav"), true, true, false, myBus, &sources[0]);
+    engine.playStream(path::join(getRootDir(), "assets/ep.wav"), true, true, false, myBus, &sources[1]);
+    engine.playStream(path::join(getRootDir(), "assets/piano.wav"), true, true, false, myBus, &sources[2]);
+    engine.playStream(path::join(getRootDir(), "assets/snare-hat.wav"), true, true, false, myBus, &sources[3]);
 
-    const SoundBuffer *pizz = buffers.loadAsync("assets/vln_pizz.ogg");
+    //engine.playSound(buffers.load("assets/orch_scene.mp3"), false, true, false, {}, nullptr);
+
+    auto pizz = buffers.load("assets/vln_pizz.ogg");
+    //engine.playStream(path::join(getRootDir(), "assets/adventure_begin.ogg"), false, true, true, {}, nullptr);
     const SoundBuffer *orch = buffers.loadAsync("assets/orch_scene.mp3");
     const SoundBuffer *arp = buffers.loadAsync("assets/arp.flac");
     const SoundBuffer *marimba = buffers.loadAsync("assets/marimba.wav");
-    const SoundBuffer *bach = buffers.loadAsync("assets/test.nsf");
+    //const SoundBuffer *bach = buffers.loadAsync("assets/test.nsf");
 
     float masterBusFade = 1.f;
 
@@ -290,37 +294,37 @@ int mainWithEngine()
                             engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, {}, nullptr);
                         } break;
 
-                        case SDL_SCANCODE_O: { // play one shot
-
-                            Handle<PCMSource> marimbaSource;
-                            engine.playSound(marimba, true, false, true, &marimbaSource);
-
-                            if (marimbaSource.isValid())
-                            {
-                                marimbaSource->addEffect<DelayEffect>(0, spec.freq * .25f, .20f, .4f);
-                                marimbaSource->setSpeed(2.f);
-                                marimbaSource->setPaused(false);
-                            }
-                        } break;
+                        // case SDL_SCANCODE_O: { // play one shot
+                        //
+                        //     Handle<PCMSource> marimbaSource;
+                        //     engine.playSound(marimba, true, false, true, &marimbaSource);
+                        //
+                        //     if (marimbaSource.isValid())
+                        //     {
+                        //         marimbaSource->addEffect<DelayEffect>(0, spec.freq * .25f, .20f, .4f);
+                        //         marimbaSource->setSpeed(2.f);
+                        //         marimbaSource->setPaused(false);
+                        //     }
+                        // } break;
 
                         case SDL_SCANCODE_I:
                         {
-                            engine.playSound(pizz, false, false, true, nullptr);
+                            engine.playSound(pizz, false, true, true, nullptr);
                         } break;
 
-                        case SDL_SCANCODE_J:
-                        {
-                            engine.playSound(arp, false, false, true, nullptr);
-                        } break;
-
-                        case SDL_SCANCODE_K:
-                        {
-                            engine.playSound(orch, false, false, true, nullptr);
-                        } break;
+                        // case SDL_SCANCODE_J:
+                        // {
+                        //     engine.playSound(arp, false, false, true, nullptr);
+                        // } break;
+                        //
+                        // case SDL_SCANCODE_K:
+                        // {
+                        //     engine.playSound(orch, false, false, true, nullptr);
+                        // } break;
 
                         case SDL_SCANCODE_B:
                         {
-                            engine.playSound(bach, false, false, true, nullptr);
+                            //engine.playSound(bach, false, false, true, nullptr);
                         } break;
 
                         case SDL_SCANCODE_Z: // Set myBus left pan =>
@@ -364,7 +368,7 @@ int mainWithEngine()
 
                         case SDL_SCANCODE_N:
                         {
-                            engine.playStream(getRootDir() + "assets/orch_scene.mp3", false, true, true, {}, nullptr);
+                            engine.playStream(path::join(getRootDir(), "assets/orch_scene.mp3"), false, true, true, {}, nullptr);
                         } break;
 
                         // Reset the sound sources

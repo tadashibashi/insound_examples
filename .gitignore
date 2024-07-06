@@ -9,6 +9,8 @@
 local.properties
 .cxx
 
+*.xcconfig
+
 CMakeUserPresets.json
 
 # Build directories

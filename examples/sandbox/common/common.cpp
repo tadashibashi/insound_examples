@@ -155,16 +155,16 @@ int mainWithEngine()
     bool sourcesWereLoaded = false;
     Handle<StreamSource> sources[4];
 
-     engine.playStream(getRootDir() + "assets/bassdrum.wav", true, true, false, myBus, &sources[0]);
-     engine.playStream(getRootDir() + "assets/ep.wav", true, true, false, myBus, &sources[1]);
-     engine.playStream(getRootDir() + "assets/piano.wav", true, true, false, myBus, &sources[2]);
-     engine.playStream(getRootDir() + "assets/snare-hat.wav", true, true, false, myBus, &sources[3]);
+     engine.playStream(path::join(getRootDir(), "assets/bassdrum.wav"), true, true, false, myBus, &sources[0]);
+     engine.playStream(path::join(getRootDir(), "assets/ep.wav"), true, true, false, myBus, &sources[1]);
+     engine.playStream(path::join(getRootDir(), "assets/piano.wav"), true, true, false, myBus, &sources[2]);
+     engine.playStream(path::join(getRootDir(), "assets/snare-hat.wav"), true, true, false, myBus, &sources[3]);
 
-    const SoundBuffer *pizz = buffers.loadAsync("assets/vln_pizz.ogg");
+    //const SoundBuffer *pizz = buffers.loadAsync("assets/vln_pizz.ogg");
     const SoundBuffer *orch = buffers.loadAsync("assets/orch_scene.mp3");
     const SoundBuffer *arp = buffers.loadAsync("assets/arp.flac");
     const SoundBuffer *marimba = buffers.loadAsync("assets/marimba.wav");
-    const SoundBuffer *bach = buffers.loadAsync("assets/test.nsf");
+    //const SoundBuffer *bach = buffers.loadAsync("assets/test.nsf");
 
     float masterBusFade = 1.f;
 

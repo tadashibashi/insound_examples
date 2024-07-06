@@ -73,10 +73,7 @@ if (NOT ANDROID)
         set_source_files_properties(${SANDBOX_RESOURCES} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources/assets/")
         list(APPEND TARGET_SOURCE ${SANDBOX_RESOURCES})
 
-        if (CMAKE_BUILD_TYPE MATCHES "Rel")
-            set(CODE_SIGN_ID "Apple Development")
-        endif()
-
+        set(CODE_SIGN_ID "Apple Development")
         set(PRODUCT_NAME                          "Insound Sandbox")
         set(EXECUTABLE_NAME                       ${PROJECT_NAME})
         set(MACOSX_BUNDLE_BUNDLE_NAME             "insound-sandbox")
@@ -85,13 +82,13 @@ if (NOT ANDROID)
         set(MACOSX_BUNDLE_SHORT_VERSION_STRING    ${PROJECT_VERSION})
         set(MACOSX_BUNDLE_LONG_VERSION_STRING     ${PROJECT_VERSION})
         set(MACOSX_BUNDLE_ICON_FILE               "")
-        set(MACOSX_BUNDLE_GUI_IDENTIFIER          "org.insound-sandbox.gui")
+        set(MACOSX_BUNDLE_GUI_IDENTIFIER          "io.insound.example.gui")
         set(MACOSX_BUNDLE_COPYRIGHT               "Copyright © 2024")
 
         if (NOT IOS)
-            set(MACOSX_DEPLOYMENT_TARGET 10.15)
+            set(MACOSX_DEPLOYMENT_TARGET "10.15")
         else()
-            set(MACOSX_DEPLOYMENT_TARGET 12.0)
+            set(MACOSX_DEPLOYMENT_TARGET "12.5.7")
         endif()
 
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/plist.in ${CMAKE_CURRENT_BINARY_DIR}/Info.plist)
@@ -102,9 +99,11 @@ if (NOT ANDROID)
             XCODE_EMBED_FRAMEWORKS_CODE_SIGN_ON_COPY    YES
             XCODE_EMBED_RESOURCES_CODE_SIGN_ON_COPY     YES
             XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY          "${CODE_SIGN_ID}"
-            XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER   "org.insound-sandbox.gui"
+            XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER   "io.insound.example.gui"
             XCODE_ATTRIBUTE_GENERATE_INFOPLIST_FILE     NO
+            XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET  ${MACOSX_DEPLOYMENT_TARGET}
         )
+        set(CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET  ${MACOSX_DEPLOYMENT_TARGET})
 
         install(TARGETS ${TARGET_NAME} BUNDLE DESTINATION ${CMAKE_INSTALL_PREFIX})
     endif()
