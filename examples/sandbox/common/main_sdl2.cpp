@@ -23,7 +23,7 @@ const std::string &getRootDir()
     static std::string rootDir;
     if (rootDir.empty())
     {
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(__EMSCRIPTEN__)
         return rootDir; // blank
 #else
         auto path = SDL_GetBasePath();
@@ -122,17 +122,17 @@ int mainWithEngine()
          SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
      if (!renderer)
      {
-         printf("SDL renderer failed to create: %s\n", SDL_GetError());
+         INSOUND_ERR("SDL renderer failed to create: %s\n", SDL_GetError());
          return -1;
      }
     SDL_SetRenderDrawColor(renderer, 128, 128, 255, 255);
 
     Engine engine;
 
-    int bufferFrameSize = 512;
+    int bufferFrameSize = 1024;
     if (!engine.open(0, bufferFrameSize))
     {
-        printf("Failed to init sound engine\n");
+        INSOUND_ERR("Failed to init sound engine\n");
         return -1;
     }
 
@@ -145,29 +145,38 @@ int mainWithEngine()
     AudioLoader buffers(&engine);
     buffers.setBaseDir(getRootDir());
 
-    // const SoundBuffer *sounds[4] = {
-    //     buffers.loadAsync("assets/bassdrum.wav"),
-    //     buffers.loadAsync("assets/ep.wav"),
-    //     buffers.loadAsync("assets/piano.wav"),
-    //     buffers.loadAsync("assets/snare-hat.wav"),
-    // };
-    // Handle<PCMSource> sources[4];
+    Handle<Sound> sounds[4];
+    engine.createSound(path::join(getRootDir(), "assets/bassdrum.wav"),
+        Sound::Stream | Sound::InMemory | Sound::Looping,
+        &sounds[0]);
+    engine.createSound(path::join(getRootDir(), "assets/ep.wav"),
+        Sound::Stream | Sound::InMemory | Sound::Looping,
+        &sounds[1]);
+    engine.createSound(path::join(getRootDir(), "assets/piano.wav"),
+        Sound::Stream | Sound::InMemory | Sound::Looping,
+        &sounds[2]);
+    engine.createSound(path::join(getRootDir(), "assets/snare-hat.wav"),
+        Sound::Stream | Sound::InMemory | Sound::Looping,
+        &sounds[3]);
+
+    Handle<Source> sources[4];
 
     bool sourcesWereLoaded = false;
-    Handle<StreamSource> sources[4];
 
-    engine.playStream(path::join(getRootDir(), "assets/bassdrum.wav"), true, true, false, true, myBus, &sources[0]);
-    engine.playStream(path::join(getRootDir(), "assets/ep.wav"), true, true, false, true, myBus, &sources[1]);
-    engine.playStream(path::join(getRootDir(), "assets/piano.wav"), true, true, false, true, myBus, &sources[2]);
-    engine.playStream(path::join(getRootDir(), "assets/snare-hat.wav"), true, true, false, true, myBus, &sources[3]);
+    engine.playSound(sounds[0], true, {}, &sources[0]);
+    engine.playSound(sounds[1], true, {}, &sources[1]);
+    engine.playSound(sounds[2], true, {}, &sources[2]);
+    engine.playSound(sounds[3], true, {}, &sources[3]);
 
     //engine.playSound(buffers.load("assets/orch_scene.mp3"), false, true, false, {}, nullptr);
 
-    auto pizz = buffers.load("assets/vln_pizz.ogg");
-    //engine.playStream(path::join(getRootDir(), "assets/adventure_begin.ogg"), false, true, true, {}, nullptr);
-    const SoundBuffer *orch = buffers.loadAsync("assets/orch_scene.mp3");
-    const SoundBuffer *arp = buffers.loadAsync("assets/arp.flac");
-    const SoundBuffer *marimba = buffers.loadAsync("assets/marimba.wav");
+    Handle<Sound> pizz, orch;
+    engine.createSound(path::join(getRootDir(), "assets/vln_pizz.ogg"), Sound::OneShot, &pizz);
+
+    engine.createSound(path::join(getRootDir(), "assets/orch_scene.mp3"), Sound::OneShot, &orch);
+
+     const SoundBuffer *arp = buffers.loadAsync("assets/arp.flac");
+     const SoundBuffer *marimba = buffers.loadAsync("assets/marimba.wav");
     //const SoundBuffer *bach = buffers.loadAsync("assets/test.nsf");
 
     float masterBusFade = 1.f;
@@ -281,17 +290,17 @@ int mainWithEngine()
                         } break;
                         case SDL_SCANCODE_KP_ENTER:
                         {
-                            engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, false, {}, nullptr);
-                            engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, false,  {}, nullptr);
-                            engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, false,  {}, nullptr);
-                            engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, false, {}, nullptr);
-                            engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, false, {}, nullptr);
-                            engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, false, {}, nullptr);
-                            engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, false, {}, nullptr);
-                            engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, false, {}, nullptr);
-                            engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, false, {}, nullptr);
-                            engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, false, {}, nullptr);
-                            engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, false, {}, nullptr);
+                            engine.playSound(pizz, false, {}, nullptr);
+                            // engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, false, {}, nullptr);
+                            // engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, false, {}, nullptr);
+                            // engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, false, {}, nullptr);
+                            // engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, false, {}, nullptr);
+                            // engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, false, {}, nullptr);
+                            // engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, false, {}, nullptr);
+                            // engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, false, {}, nullptr);
+                            // engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, false, {}, nullptr);
+                            // engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, false, {}, nullptr);
+                            // engine.playStream(getRootDir() + "assets/vln_pizz.ogg", false, false, true, false, {}, nullptr);
                         } break;
 
                         // case SDL_SCANCODE_O: { // play one shot
@@ -309,7 +318,7 @@ int mainWithEngine()
 
                         case SDL_SCANCODE_I:
                         {
-                            engine.playSound(pizz, false, true, true, nullptr);
+                            engine.playSound(pizz, false, {}, nullptr);
                         } break;
 
                         // case SDL_SCANCODE_J:
@@ -368,7 +377,7 @@ int mainWithEngine()
 
                         case SDL_SCANCODE_N:
                         {
-                            engine.playStream(path::join(getRootDir(), "assets/orch_scene.mp3"), false, true, true, true, {}, nullptr);
+                            engine.playSound(orch, false, {}, nullptr);
                         } break;
 
                         // Reset the sound sources

@@ -33,13 +33,28 @@ if (INSOUND_SANDBOX_USE_SDL3)
     target_link_libraries(sandbox_common PUBLIC SDL3::SDL3-static)
     target_sources(sandbox_common PRIVATE main_sdl3.cpp)
 else()
-    if (EMSCRIPTEN)
-        target_compile_options(sandbox_common PRIVATE -sUSE_SDL=2)
-        target_link_options(sandbox_common PRIVATE -sUSE_SDL=2)
-    else()
-        target_link_libraries(sandbox_common PUBLIC SDL2::SDL2-static)
-        target_sources(sandbox_common PRIVATE main_sdl2.cpp)
+    if (NOT TARGET SDL2::SDL2-static) # user can provide their own SDL2 submodule, but we may want to enforce a minimum version
+        include(FetchContent)
+        FetchContent_Declare(SDL2
+            GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
+            GIT_TAG        92fe3b19c868ad062c323dde2cfc9d8b4bfdd785
+        )
+
+        set(SDL_STATIC             ON)
+        set(SDL_SHARED             OFF)
+        set(SDL2_DISABLE_UNINSTALL ON )
+        set(SDL2_DISABLE_INSTALL   ON )
+        set(SDL_TEST               OFF)
+        set(SDL_ASSEMBLY           ON)
+        set(SDL_ARMNEON            ON)
+        set(SDL_PTHREADS           NOT ${INSOUND_NO_PTHREAD})
+
+        FetchContent_MakeAvailable(SDL2)
     endif()
+
+    target_link_libraries(sandbox_common PUBLIC SDL2::SDL2-static)
+    target_sources(sandbox_common PRIVATE main_sdl2.cpp)
+
 endif()
 
 target_link_libraries(sandbox_common PRIVATE insound)

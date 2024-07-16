@@ -30,25 +30,6 @@ set(INSOUND_EXAMPLES_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "Insound 
 # Add ./cmake to CMake modules path
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-if (NOT TARGET SDL2::SDL2-static) # user can provide their own SDL2 submodule, but we may want to enforce a minimum version
-    include(FetchContent)
-    FetchContent_Declare(SDL2
-        GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
-        GIT_TAG        92fe3b19c868ad062c323dde2cfc9d8b4bfdd785
-    )
-
-    set(SDL_STATIC             ON)
-    set(SDL_SHARED             OFF)
-    set(SDL2_DISABLE_UNINSTALL ON )
-    set(SDL2_DISABLE_INSTALL   ON )
-    set(SDL_TEST               OFF)
-    set(SDL_ASSEMBLY           ON)
-    set(SDL_ARMNEON            ON)
-    set(SDL_PTHREADS           NOT ${INSOUND_NO_PTHREAD})
-
-    FetchContent_MakeAvailable(SDL2)
-endif()
-
 set(INSOUND_BACKEND_SDL2 OFF CACHE BOOL "" FORCE)
 set(INSOUND_USE_CLIENT_SDL2 OFF CACHE BOOL "" FORCE)
 set(INSOUND_BACKEND_SDL3 OFF CACHE BOOL "" FORCE)
